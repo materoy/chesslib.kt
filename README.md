@@ -1,4 +1,4 @@
-Simple Java Chess Library
+Simple Kotlin Chess Library
 =========================
 
 [![](https://jitpack.io/v/bhlangonijr/chesslib.svg)](https://jitpack.io/#bhlangonijr/chesslib) ![mvn build](https://github.com/bhlangonijr/chesslib/actions/workflows/maven.yml/badge.svg)
