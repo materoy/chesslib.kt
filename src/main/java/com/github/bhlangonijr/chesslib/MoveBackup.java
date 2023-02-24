@@ -74,23 +74,23 @@ public class MoveBackup implements BoardEvent {
      */
     public void makeBackup(Board board, Move move) {
 
-        setIncrementalHashKey(board.getIncrementalHashKey());
-        setSideToMove(board.getSideToMove());
-        setEnPassantTarget(board.getEnPassantTarget());
-        setEnPassant(board.getEnPassant());
-        setMoveCounter(board.getMoveCounter());
-        setHalfMoveCounter(board.getHalfMoveCounter());
+        setIncrementalHashKey(board.incrementalHashKey);
+        setSideToMove(board.sideToMove);
+        setEnPassantTarget(board.enPassantTarget);
+        setEnPassant(board.enPassant);
+        setMoveCounter(board.moveCounter);
+        setHalfMoveCounter(board.halfMoveCounter);
         setMove(move);
         getCastleRight().put(Side.WHITE, board.getCastleRight(Side.WHITE));
         getCastleRight().put(Side.BLACK, board.getCastleRight(Side.BLACK));
-        setCapturedPiece(board.getPiece(move.getTo()));
-        setCapturedSquare(move.getTo());
-        Piece moving = board.getPiece(move.getFrom());
+        setCapturedPiece(board.getPiece(move.to));
+        setCapturedSquare(move.to);
+        Piece moving = board.getPiece(move.from);
         setMovingPiece(moving);
-        if (board.getContext().isCastleMove(move) && movingPiece == Piece.make(board.getSideToMove(), PieceType.KING)) {
-            CastleRight c = board.getContext().isKingSideCastle(move) ? CastleRight.KING_SIDE :
+        if (board.context.isCastleMove(move) && movingPiece == Piece.make(board.sideToMove, PieceType.KING)) {
+            CastleRight c = board.context.isKingSideCastle(move) ? CastleRight.KING_SIDE :
                     CastleRight.QUEEN_SIDE;
-            Move rookMove = board.getContext().getRookCastleMove(board.getSideToMove(), c);
+            Move rookMove = board.context.getRookCastleMove(board.sideToMove, c);
             setRookCastleMove(rookMove);
             setCastleMove(true);
         } else {
@@ -110,32 +110,32 @@ public class MoveBackup implements BoardEvent {
      * @param board the board to be restored to a previous status
      */
     public void restore(Board board) {
-        board.setSideToMove(getSideToMove());
-        board.setEnPassantTarget(getEnPassantTarget());
-        board.setEnPassant(getEnPassant());
-        board.setMoveCounter(getMoveCounter());
-        board.setHalfMoveCounter(getHalfMoveCounter());
-        Piece movingPiece = move.getPromotion() == Piece.NONE ? getMovingPiece() : move.getPromotion();
-        board.getCastleRight().put(Side.WHITE, getCastleRight().get(Side.WHITE));
-        board.getCastleRight().put(Side.BLACK, getCastleRight().get(Side.BLACK));
+        board.sideToMove = getSideToMove();
+        board.enPassantTarget = getEnPassantTarget();
+        board.enPassant = getEnPassant();
+        board.moveCounter = getMoveCounter();
+        board.halfMoveCounter = getHalfMoveCounter();
+        Piece movingPiece = move.promotion == Piece.NONE ? getMovingPiece() : move.promotion;
+        board.castleRight.put(Side.WHITE, getCastleRight().get(Side.WHITE));
+        board.castleRight.put(Side.BLACK, getCastleRight().get(Side.BLACK));
 
         if (move != emptyMove) {
-            final boolean isCastle = board.getContext().isCastleMove(getMove());
+            final boolean isCastle = board.context.isCastleMove(getMove());
 
             if (PieceType.KING.equals(movingPiece.getPieceType()) && isCastle) {
                 board.undoMovePiece(getRookCastleMove());
             }
-            board.unsetPiece(movingPiece, getMove().getTo());
-            if (Piece.NONE.equals(getMove().getPromotion())) {
-                board.setPiece(movingPiece, getMove().getFrom());
+            board.unsetPiece(movingPiece, getMove().to);
+            if (Piece.NONE.equals(getMove().promotion)) {
+                board.setPiece(movingPiece, getMove().from);
             } else {
-                board.setPiece(Piece.make(getSideToMove(), PieceType.PAWN), getMove().getFrom());
+                board.setPiece(Piece.make(getSideToMove(), PieceType.PAWN), getMove().from);
             }
             if (!Piece.NONE.equals(getCapturedPiece())) {
                 board.setPiece(getCapturedPiece(), getCapturedSquare());
             }
         }
-        board.setIncrementalHashKey(getIncrementalHashKey());
+        board.incrementalHashKey = getIncrementalHashKey();
     }
 
     /**

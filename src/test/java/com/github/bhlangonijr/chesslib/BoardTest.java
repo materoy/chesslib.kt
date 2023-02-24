@@ -38,10 +38,10 @@ public class BoardTest {
         assertEquals(Piece.BLACK_ROOK, board.getPiece(Square.H8));
         assertEquals(Piece.WHITE_ROOK, board.getPiece(Square.H1));
 
-        assertEquals(Integer.valueOf(0), board.getHalfMoveCounter());
-        assertEquals(Integer.valueOf(1), board.getMoveCounter());
-        assertEquals(Square.E3, board.getEnPassant());
-        assertEquals(Square.NONE, board.getEnPassantTarget());
+        assertEquals(Integer.valueOf(0), board.halfMoveCounter);
+        assertEquals(Integer.valueOf(1), board.moveCounter);
+        assertEquals(Square.E3, board.enPassant);
+        assertEquals(Square.NONE, board.enPassantTarget);
 
         assertEquals(fen1, board.getFen());
 
@@ -305,74 +305,74 @@ public class BoardTest {
 
         long initialHash = b.getZobristKey();
 
-        assertEquals(b.getZobristKey(), b.getIncrementalHashKey());
+        assertEquals(b.getZobristKey(), b.incrementalHashKey);
         assertEquals(b.hashCode(), b2.hashCode());
 
         b.doMove(new Move(Square.D1, Square.E1));
         b2.doMove(new Move(Square.D1, Square.E1));
-        assertEquals(b.getZobristKey(), b.getIncrementalHashKey());
+        assertEquals(b.getZobristKey(), b.incrementalHashKey);
         assertEquals(b.hashCode(), b2.hashCode());
 
         b.doMove(new Move(Square.F2, Square.H1));
         b2.doMove(new Move(Square.F2, Square.H1));
 
-        assertEquals(b.getZobristKey(), b.getIncrementalHashKey());
+        assertEquals(b.getZobristKey(), b.incrementalHashKey);
         assertEquals(b.hashCode(), b2.hashCode());
 
         b.doMove(new Move(Square.F8, Square.C5));
         b2.doMove(new Move(Square.F8, Square.C5));
 
-        assertEquals(b.getZobristKey(), b.getIncrementalHashKey());
+        assertEquals(b.getZobristKey(), b.incrementalHashKey);
         assertEquals(b.hashCode(), b2.hashCode());
         System.out.println(b.getZobristKey());
 
         b.doMove(new Move(Square.G1, Square.E2));
         b2.doMove(new Move(Square.G1, Square.E2));
 
-        assertEquals(b.getZobristKey(), b.getIncrementalHashKey());
+        assertEquals(b.getZobristKey(), b.incrementalHashKey);
         assertEquals(b.hashCode(), b2.hashCode());
         System.out.println(b.getZobristKey());
 
         b.doMove(new Move(Square.C1, Square.D2));
         b2.doMove(new Move(Square.C1, Square.D2));
 
-        assertEquals(b.getZobristKey(), b.getIncrementalHashKey());
+        assertEquals(b.getZobristKey(), b.incrementalHashKey);
         assertEquals(b.hashCode(), b2.hashCode());
 
         b.doMove(new Move(Square.C8, Square.E6));
         b2.doMove(new Move(Square.C8, Square.E6));
 
-        assertEquals(b.getZobristKey(), b.getIncrementalHashKey());
+        assertEquals(b.getZobristKey(), b.incrementalHashKey);
         assertEquals(b.hashCode(), b2.hashCode());
 
         b.doMove(new Move(Square.E2, Square.F4));
         b2.doMove(new Move(Square.E2, Square.F4));
 
-        assertEquals(b.getZobristKey(), b.getIncrementalHashKey());
+        assertEquals(b.getZobristKey(), b.incrementalHashKey);
         assertEquals(b.hashCode(), b2.hashCode());
 
         b.doMove(new Move(Square.C3, Square.C4));
         b2.doMove(new Move(Square.C3, Square.C4));
 
-        assertEquals(b.getZobristKey(), b.getIncrementalHashKey());
+        assertEquals(b.getZobristKey(), b.incrementalHashKey);
         assertEquals(b.hashCode(), b2.hashCode());
 
         b.doMove(new Move(Square.A8, Square.D8));
         b2.doMove(new Move(Square.A8, Square.D8));
 
-        assertEquals(b.getZobristKey(), b.getIncrementalHashKey());
+        assertEquals(b.getZobristKey(), b.incrementalHashKey);
         assertEquals(b.hashCode(), b2.hashCode());
 
         b.doMove(new Move(Square.B1, Square.C3));
         b2.doMove(new Move(Square.B1, Square.C3));
 
-        assertEquals(b.getZobristKey(), b.getIncrementalHashKey());
+        assertEquals(b.getZobristKey(), b.incrementalHashKey);
         assertEquals(b.hashCode(), b2.hashCode());
 
         b.doMove(new Move(Square.D8, Square.D6));
         b2.doMove(new Move(Square.D8, Square.D6));
 
-        assertEquals(b.getZobristKey(), b.getIncrementalHashKey());
+        assertEquals(b.getZobristKey(), b.incrementalHashKey);
         assertEquals(b.hashCode(), b2.hashCode());
 
         for (int i = 1; i <= 11; i++) {
@@ -392,42 +392,42 @@ public class BoardTest {
         Board b2 = b.clone();
         long initialHash = b.getZobristKey();
 
-        assertEquals(b.getZobristKey(), b.getIncrementalHashKey());
+        assertEquals(b.getZobristKey(), b.incrementalHashKey);
         assertEquals(b.hashCode(), b2.hashCode());
 
         b.doMove(new Move(Square.E2, Square.E4));
         b2.doMove(new Move(Square.E2, Square.E4));
-        assertEquals(b.getZobristKey(), b.getIncrementalHashKey());
+        assertEquals(b.getZobristKey(), b.incrementalHashKey);
         assertEquals(b.hashCode(), b2.hashCode());
 
         b.doMove(new Move(Square.E7, Square.E5));
         b2.doMove(new Move(Square.E7, Square.E5));
-        assertEquals(b.getZobristKey(), b.getIncrementalHashKey());
+        assertEquals(b.getZobristKey(), b.incrementalHashKey);
         assertEquals(b.hashCode(), b2.hashCode());
 
         b.doMove(new Move(Square.G1, Square.F3));
         b2.doMove(new Move(Square.G1, Square.F3));
-        assertEquals(b.getZobristKey(), b.getIncrementalHashKey());
+        assertEquals(b.getZobristKey(), b.incrementalHashKey);
         assertEquals(b.hashCode(), b2.hashCode());
 
         b.doMove(new Move(Square.B8, Square.C6));
         b2.doMove(new Move(Square.B8, Square.C6));
-        assertEquals(b.getZobristKey(), b.getIncrementalHashKey());
+        assertEquals(b.getZobristKey(), b.incrementalHashKey);
         assertEquals(b.hashCode(), b2.hashCode());
 
         b.doMove(new Move(Square.F1, Square.B5));
         b2.doMove(new Move(Square.F1, Square.B5));
-        assertEquals(b.getZobristKey(), b.getIncrementalHashKey());
+        assertEquals(b.getZobristKey(), b.incrementalHashKey);
         assertEquals(b.hashCode(), b2.hashCode());
 
         b.doMove(new Move(Square.G8, Square.F6));
         b2.doMove(new Move(Square.G8, Square.F6));
-        assertEquals(b.getZobristKey(), b.getIncrementalHashKey());
+        assertEquals(b.getZobristKey(), b.incrementalHashKey);
         assertEquals(b.hashCode(), b2.hashCode());
 
         b.doMove(new Move(Square.E1, Square.G1));
         b2.doMove(new Move(Square.E1, Square.G1));
-        assertEquals(b.getZobristKey(), b.getIncrementalHashKey());
+        assertEquals(b.getZobristKey(), b.incrementalHashKey);
         assertEquals(b.hashCode(), b2.hashCode());
         System.out.println(b.getFen());
         for (int i = 1; i <= 7; i++) {
@@ -449,11 +449,11 @@ public class BoardTest {
 
         b.doNullMove();
 
-        assertNotSame(b.getSideToMove(), b2.getSideToMove());
+        assertNotSame(b.sideToMove, b2.sideToMove);
         assertNotSame(b.hashCode(), b2.hashCode());
 
         b.undoMove();
-        assertEquals(b.getSideToMove(), b2.getSideToMove());
+        assertEquals(b.sideToMove, b2.sideToMove);
         assertEquals(b.hashCode(), b2.hashCode());
 
     }
@@ -523,7 +523,7 @@ public class BoardTest {
         board.loadFromFen("r1bqk1nr/pppp1ppp/2n5/2b1p3/4P3/5N2/PPPPBPPP/RNBQK2R w KQkq - 0 1");
         assertEquals(CastleRight.KING_AND_QUEEN_SIDE, board.getCastleRight(Side.WHITE));
         board.doMove(new Move(Square.E1, Square.G1)); // castle
-        final MoveBackup moveBackup = board.getBackup().getLast();
+        final MoveBackup moveBackup = board.backup.getLast();
         assertTrue(moveBackup.isCastleMove());
         assertEquals(new Move(Square.H1, Square.F1), moveBackup.getRookCastleMove());
     }
@@ -536,7 +536,7 @@ public class BoardTest {
 
         final Move whiteRookMoveE1G1 = new Move("e1g1", Side.WHITE);
         board.doMove(whiteRookMoveE1G1);
-        final MoveBackup moveBackup = board.getBackup().getLast();
+        final MoveBackup moveBackup = board.backup.getLast();
         assertFalse(moveBackup.isCastleMove());
         assertNull(moveBackup.getRookCastleMove());
     }
@@ -798,12 +798,12 @@ public class BoardTest {
         final Move e7e5 = new Move(Square.E7, Square.E5);
         board.doMove(e2e4);
         board.doMove(e7e5);
-        long initialKey = board.getIncrementalHashKey();
+        long initialKey = board.incrementalHashKey;
 
         board.undoMove();
         board.doMove(e7e5);
-        assertEquals(initialKey, board.getIncrementalHashKey());
-        assertEquals((long) board.getHistory().getLast(), board.getIncrementalHashKey());
+        assertEquals(initialKey, board.incrementalHashKey);
+        assertEquals((long) board.history.getLast(), board.incrementalHashKey);
         assertEquals(board.getZobristKey(), initialKey);
 
     }

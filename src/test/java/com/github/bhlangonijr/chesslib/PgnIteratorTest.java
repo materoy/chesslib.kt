@@ -24,18 +24,18 @@ public class PgnIteratorTest {
     public void testPGNOrder() throws Exception {
         PgnIterator games = new PgnIterator("src/test/resources/pgn_order.pgn");
         Game game = games.iterator().next();
-        assertEquals("1st World U20 ch", game.getRound().getEvent().getName());
-        assertEquals("Birmingham ENG", game.getRound().getEvent().getSite());
-        assertEquals("1951.06.20", game.getDate());
-        assertEquals("1951.06.20", game.getRound().getEvent().getStartDate());
-        assertEquals(9, game.getRound().getNumber());
-        assertEquals(GameResult.WHITE_WON, game.getResult());
-        assertEquals("Bent Larsen", game.getWhitePlayer().getName());
-        assertEquals("Lionel Joyner", game.getBlackPlayer().getName());
-        assertEquals("C30", game.getEco());
-        assertEquals(0, game.getWhitePlayer().getElo()); //TODO have a null (not inserted), vs unknown (?) ?
-        assertEquals(0, game.getBlackPlayer().getElo());
-        assertEquals("63", game.getPlyCount()); //TODO why is it a string?
+        assertEquals("1st World U20 ch", game.round.event.name);
+        assertEquals("Birmingham ENG", game.round.event.site);
+        assertEquals("1951.06.20", game.date);
+        assertEquals("1951.06.20", game.round.event.startDate);
+        assertEquals(9, game.round.number);
+        assertEquals(GameResult.WHITE_WON, game.result);
+        assertEquals("Bent Larsen", game.whitePlayer.name);
+        assertEquals("Lionel Joyner", game.blackPlayer.name);
+        assertEquals("C30", game.eco);
+        assertEquals(0, game.whitePlayer.elo); //TODO have a null (not inserted), vs unknown (?) ?
+        assertEquals(0, game.blackPlayer.elo);
+        assertEquals("63", game.plyCount); //TODO why is it a string?
         //assertEquals("...", game.getHalfMoves().toString()); //TODO
     }
 
@@ -49,17 +49,17 @@ public class PgnIteratorTest {
             count++;
             switch (count) {
                 case 1: {
-                    assertEquals("Rookie", game.getWhitePlayer().getName());
-                    assertEquals("JabbaChess", game.getBlackPlayer().getName());
-                    assertEquals("2011.01.29", game.getDate());
-                    assertEquals(2, game.getRound().getNumber());
-                    assertEquals("1-0", game.getResult().getDescription());
-                    assertEquals("67", game.getPlyCount());
-                    assertEquals("Albert Silver", game.getAnnotator());
-                    assertEquals(2285, game.getWhitePlayer().getElo());
-                    assertEquals(1680, game.getBlackPlayer().getElo());
+                    assertEquals("Rookie", game.whitePlayer.name);
+                    assertEquals("JabbaChess", game.blackPlayer.name);
+                    assertEquals("2011.01.29", game.date);
+                    assertEquals(2, game.round.number);
+                    assertEquals("1-0", game.result.description);
+                    assertEquals("67", game.plyCount);
+                    assertEquals("Albert Silver", game.annotator);
+                    assertEquals(2285, game.whitePlayer.elo);
+                    assertEquals(1680, game.blackPlayer.elo);
 
-                    assertEquals("C00", game.getEco());
+                    assertEquals("C00", game.eco);
                     assertEquals(67, game.getHalfMoves().size());
                     assertEquals("e2e4 e7e6 d2d4 a7a6 g1f3 d7d5 e4d5 e6d5 f1d3 b8c6 e1g1 g8f6 f1e1 f8e7 c2c3 e8g8 b1d2 f8e8 f3e5 " +
                             "c6e5 d4e5 f6d7 d2b3 g7g6 b3d4 c7c5 d4f3 b7b5 c1h6 c8b7 h2h4 e7h4 a2a4 b5b4 c3b4 c5b4 d1c1 h4e7 c1f4 " +
@@ -68,17 +68,17 @@ public class PgnIteratorTest {
                     break;
                 }
                 case 2: {
-                    assertEquals("Chirone", game.getWhitePlayer().getName());
-                    assertEquals("crafty", game.getBlackPlayer().getName());
-                    assertEquals("2011.01.29", game.getDate());
-                    assertEquals(2, game.getRound().getNumber());
-                    assertEquals("1-0", game.getResult().getDescription());
-                    assertEquals("143", game.getPlyCount());
-                    assertEquals("Albert Silver", game.getAnnotator());
-                    assertEquals(2557, game.getWhitePlayer().getElo());
-                    assertEquals(2308, game.getBlackPlayer().getElo());
+                    assertEquals("Chirone", game.whitePlayer.name);
+                    assertEquals("crafty", game.blackPlayer.name);
+                    assertEquals("2011.01.29", game.date);
+                    assertEquals(2, game.round.number);
+                    assertEquals("1-0", game.result.description);
+                    assertEquals("143", game.plyCount);
+                    assertEquals("Albert Silver", game.annotator);
+                    assertEquals(2557, game.whitePlayer.elo);
+                    assertEquals(2308, game.blackPlayer.elo);
 
-                    assertEquals("C67", game.getEco());
+                    assertEquals("C67", game.eco);
                     assertEquals(143, game.getHalfMoves().size());
                     assertEquals("e2e4 e7e5 g1f3 b8c6 f1b5 g8f6 e1g1 f6e4 d2d4 f8e7 d1e2 e4d6 b5c6 b7c6 " +
                             "d4e5 d6b7 f3d4 e8g8 b1c3 e7c5 c1e3 f8e8 f2f4 d7d6 a1d1 c8d7 e2f3 c5b6 e3f2 d8c8 h2h3 " +
@@ -92,17 +92,17 @@ public class PgnIteratorTest {
                     break;
                 }
                 case 3: {
-                    assertEquals("JabbaChess", game.getWhitePlayer().getName());
-                    assertEquals("CapivaraLK", game.getBlackPlayer().getName());
-                    assertEquals("2011.01.29", game.getDate());
-                    assertEquals(3, game.getRound().getNumber());
-                    assertEquals("1-0", game.getResult().getDescription());
-                    assertEquals("64", game.getPlyCount());
-                    assertEquals("Albert Silver", game.getAnnotator());
-                    assertEquals(1680, game.getWhitePlayer().getElo());
-                    assertEquals(0, game.getBlackPlayer().getElo());
+                    assertEquals("JabbaChess", game.whitePlayer.name);
+                    assertEquals("CapivaraLK", game.blackPlayer.name);
+                    assertEquals("2011.01.29", game.date);
+                    assertEquals(3, game.round.number);
+                    assertEquals("1-0", game.result.description);
+                    assertEquals("64", game.plyCount);
+                    assertEquals("Albert Silver", game.annotator);
+                    assertEquals(1680, game.whitePlayer.elo);
+                    assertEquals(0, game.blackPlayer.elo);
 
-                    assertEquals("E62", game.getEco());
+                    assertEquals("E62", game.eco);
                     assertEquals(64, game.getHalfMoves().size());
                     assertEquals("d2d4 g8f6 c2c4 g7g6 g1f3 f8g7 g2g3 e8g8 b1c3 d7d6 f1g2 b8c6 e1g1 c8g4 " +
                                     "d4d5 c6a5 b2b3 f6d5 c3d5 g7a1 c1d2 g4f3 g2f3 a5c4 b3c4 a1g7 d1b3 c7c6 d5b4 e7e5 f1d1 " +
@@ -127,7 +127,7 @@ public class PgnIteratorTest {
         for (Game game: games) {
 
             String[] moves = game.getHalfMoves().toSanArray();
-            Map<Integer, String> comments = game.getComments();
+            Map<Integer, String> comments = game.comments;
             for (int i = 0; i < moves.length; i++) {
                 String halfMove = ((i + 2) / 2) + (i % 2 != 0 ? ".." : StringUtils.SPACE);
                 String move = moves[i];

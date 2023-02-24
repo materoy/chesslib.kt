@@ -43,14 +43,14 @@ public class MoveGenerator {
      * @param moves a mutable list in which to append the generated pawn captures
      */
     public static void generatePawnCaptures(Board board, List<Move> moves) {
-        Side side = board.getSideToMove();
+        Side side = board.sideToMove;
         long pieces = board.getBitboard(Piece.make(side, PieceType.PAWN));
         while (pieces != 0L) {
             int sourceIndex = bitScanForward(pieces);
             pieces = extractLsb(pieces);
             Square sqSource = Square.squareAt(sourceIndex);
             long attacks = Bitboard.getPawnCaptures(side, sqSource,
-                    board.getBitboard(), board.getEnPassantTarget()) & ~board.getBitboard(side);
+                    board.getBitboard(), board.enPassantTarget) & ~board.getBitboard(side);
             while (attacks != 0L) {
                 int targetIndex = bitScanForward(attacks);
                 attacks = extractLsb(attacks);
@@ -71,7 +71,7 @@ public class MoveGenerator {
      * @param moves a mutable list in which to append the generated pawn moves
      */
     public static void generatePawnMoves(Board board, List<Move> moves) {
-        Side side = board.getSideToMove();
+        Side side = board.sideToMove;
         long pieces = board.getBitboard(Piece.make(side, PieceType.PAWN));
         while (pieces != 0L) {
             int sourceIndex = bitScanForward(pieces);
@@ -117,7 +117,7 @@ public class MoveGenerator {
      * @param mask  bitboard mask of allowed targets
      */
     public static void generateKnightMoves(Board board, List<Move> moves, long mask) {
-        Side side = board.getSideToMove();
+        Side side = board.sideToMove;
         long pieces = board.getBitboard(Piece.make(side, PieceType.KNIGHT));
         while (pieces != 0L) {
             int knightIndex = bitScanForward(pieces);
@@ -146,7 +146,7 @@ public class MoveGenerator {
      */
     public static void generateKnightMoves(Board board, List<Move> moves) {
 
-        generateKnightMoves(board, moves, ~board.getBitboard(board.getSideToMove()));
+        generateKnightMoves(board, moves, ~board.getBitboard(board.sideToMove));
     }
 
     /**
@@ -162,7 +162,7 @@ public class MoveGenerator {
      * @param mask  bitboard mask of allowed targets
      */
     public static void generateBishopMoves(Board board, List<Move> moves, long mask) {
-        Side side = board.getSideToMove();
+        Side side = board.sideToMove;
         long pieces = board.getBitboard(Piece.make(side, PieceType.BISHOP));
         while (pieces != 0L) {
             int sourceIndex = bitScanForward(pieces);
@@ -191,7 +191,7 @@ public class MoveGenerator {
      */
     public static void generateBishopMoves(Board board, List<Move> moves) {
 
-        generateBishopMoves(board, moves, ~board.getBitboard(board.getSideToMove()));
+        generateBishopMoves(board, moves, ~board.getBitboard(board.sideToMove));
     }
 
     /**
@@ -207,7 +207,7 @@ public class MoveGenerator {
      * @param mask  bitboard mask of allowed targets
      */
     public static void generateRookMoves(Board board, List<Move> moves, long mask) {
-        Side side = board.getSideToMove();
+        Side side = board.sideToMove;
         long pieces = board.getBitboard(Piece.make(side, PieceType.ROOK));
         while (pieces != 0L) {
             int sourceIndex = bitScanForward(pieces);
@@ -236,7 +236,7 @@ public class MoveGenerator {
      */
     public static void generateRookMoves(Board board, List<Move> moves) {
 
-        generateRookMoves(board, moves, ~board.getBitboard(board.getSideToMove()));
+        generateRookMoves(board, moves, ~board.getBitboard(board.sideToMove));
     }
 
     /**
@@ -252,7 +252,7 @@ public class MoveGenerator {
      * @param mask  bitboard mask of allowed targets
      */
     public static void generateQueenMoves(Board board, List<Move> moves, long mask) {
-        Side side = board.getSideToMove();
+        Side side = board.sideToMove;
         long pieces = board.getBitboard(Piece.make(side, PieceType.QUEEN));
         while (pieces != 0L) {
             int sourceIndex = bitScanForward(pieces);
@@ -281,7 +281,7 @@ public class MoveGenerator {
      */
     public static void generateQueenMoves(Board board, List<Move> moves) {
 
-        generateQueenMoves(board, moves, ~board.getBitboard(board.getSideToMove()));
+        generateQueenMoves(board, moves, ~board.getBitboard(board.sideToMove));
     }
 
     /**
@@ -297,7 +297,7 @@ public class MoveGenerator {
      * @param mask  bitboard mask of allowed targets
      */
     public static void generateKingMoves(Board board, List<Move> moves, long mask) {
-        Side side = board.getSideToMove();
+        Side side = board.sideToMove;
         long pieces = board.getBitboard(Piece.make(side, PieceType.KING));
         while (pieces != 0L) {
             int sourceIndex = bitScanForward(pieces);
@@ -325,7 +325,7 @@ public class MoveGenerator {
      * @see MoveGenerator#generateKingMoves(Board, List, long)
      */
     public static void generateKingMoves(Board board, List<Move> moves) {
-        generateKingMoves(board, moves, ~board.getBitboard(board.getSideToMove()));
+        generateKingMoves(board, moves, ~board.getBitboard(board.sideToMove));
     }
 
     /**
@@ -336,23 +336,23 @@ public class MoveGenerator {
      * @param moves a mutable list in which to append the generated castle moves
      */
     public static void generateCastleMoves(Board board, List<Move> moves) {
-        Side side = board.getSideToMove();
+        Side side = board.sideToMove;
         if (board.isKingAttacked()) {
             return;
         }
         if (board.getCastleRight(side).equals(CastleRight.KING_AND_QUEEN_SIDE) ||
                 (board.getCastleRight(side).equals(CastleRight.KING_SIDE))) {
-            if ((board.getBitboard() & board.getContext().getooAllSquaresBb(side)) == 0L) {
-                if (!board.isSquareAttackedBy(board.getContext().getooSquares(side), side.flip())) {
-                    moves.add(board.getContext().getoo(side));
+            if ((board.getBitboard() & board.context.getooAllSquaresBb(side)) == 0L) {
+                if (!board.isSquareAttackedBy(board.context.getooSquares(side), side.flip())) {
+                    moves.add(board.context.getoo(side));
                 }
             }
         }
         if (board.getCastleRight(side).equals(CastleRight.KING_AND_QUEEN_SIDE) ||
                 (board.getCastleRight(side).equals(CastleRight.QUEEN_SIDE))) {
-            if ((board.getBitboard() & board.getContext().getoooAllSquaresBb(side)) == 0L) {
-                if (!board.isSquareAttackedBy(board.getContext().getoooSquares(side), side.flip())) {
-                    moves.add(board.getContext().getooo(side));
+            if ((board.getBitboard() & board.context.getoooAllSquaresBb(side)) == 0L) {
+                if (!board.isSquareAttackedBy(board.context.getoooSquares(side), side.flip())) {
+                    moves.add(board.context.getooo(side));
                 }
             }
         }
@@ -392,7 +392,7 @@ public class MoveGenerator {
      */
     public static List<Move> generatePseudoLegalCaptures(Board board) {
         List<Move> moves = new LinkedList<>();
-        Side other = board.getSideToMove().flip();
+        Side other = board.sideToMove.flip();
         generatePawnCaptures(board, moves);
         generateKnightMoves(board, moves, board.getBitboard(other));
         generateBishopMoves(board, moves, board.getBitboard(other));

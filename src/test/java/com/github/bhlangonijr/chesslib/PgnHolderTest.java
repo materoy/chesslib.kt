@@ -37,17 +37,17 @@ public class PgnHolderTest {
         game.loadMoveText();
 
         assertEquals(3, pgn.getGames().size());
-        assertEquals("Rookie", game.getWhitePlayer().getName());
-        assertEquals("JabbaChess", game.getBlackPlayer().getName());
-        assertEquals("2011.01.29", game.getDate());
-        assertEquals(2, game.getRound().getNumber());
-        assertEquals("1-0", game.getResult().getDescription());
-        assertEquals("67", game.getPlyCount());
-        assertEquals("Albert Silver", game.getAnnotator());
-        assertEquals(2285, game.getWhitePlayer().getElo());
-        assertEquals(1680, game.getBlackPlayer().getElo());
+        assertEquals("Rookie", game.whitePlayer.name);
+        assertEquals("JabbaChess", game.blackPlayer.name);
+        assertEquals("2011.01.29", game.date);
+        assertEquals(2, game.round.number);
+        assertEquals("1-0", game.result.description);
+        assertEquals("67", game.plyCount);
+        assertEquals("Albert Silver", game.annotator);
+        assertEquals(2285, game.whitePlayer.elo);
+        assertEquals(1680, game.blackPlayer.elo);
 
-        assertEquals("C00", game.getEco());
+        assertEquals("C00", game.eco);
         assertEquals(67, game.getHalfMoves().size());
         assertEquals("e2e4 e7e6 d2d4 a7a6 g1f3 d7d5 e4d5 e6d5 f1d3 b8c6 e1g1 g8f6 f1e1 f8e7 c2c3 e8g8 b1d2 f8e8 f3e5 " +
                 "c6e5 d4e5 f6d7 d2b3 g7g6 b3d4 c7c5 d4f3 b7b5 c1h6 c8b7 h2h4 e7h4 a2a4 b5b4 c3b4 c5b4 d1c1 h4e7 c1f4 " +
@@ -70,17 +70,17 @@ public class PgnHolderTest {
         game.loadMoveText();
 
         assertEquals(1, pgn.getGames().size());
-        assertEquals("Ponomariov, Ruslan", game.getWhitePlayer().getName());
-        assertEquals("Ivanchuk, Vassily", game.getBlackPlayer().getName());
-        assertEquals("2002.02.23", game.getDate());
-        assertEquals(1, game.getRound().getNumber());
-        assertEquals("1-0", game.getResult().getDescription());
-        assertEquals("89", game.getPlyCount());
-        assertEquals("Hathaway, Mark", game.getAnnotator());
-        assertEquals(2727, game.getWhitePlayer().getElo());
-        assertEquals(2717, game.getBlackPlayer().getElo());
+        assertEquals("Ponomariov, Ruslan", game.whitePlayer.name);
+        assertEquals("Ivanchuk, Vassily", game.blackPlayer.name);
+        assertEquals("2002.02.23", game.date);
+        assertEquals(1, game.round.number);
+        assertEquals("1-0", game.result.description);
+        assertEquals("89", game.plyCount);
+        assertEquals("Hathaway, Mark", game.annotator);
+        assertEquals(2727, game.whitePlayer.elo);
+        assertEquals(2717, game.blackPlayer.elo);
 
-        assertEquals("C18", game.getEco());
+        assertEquals("C18", game.eco);
         assertEquals(89, game.getHalfMoves().size());
         assertEquals("e2e4 e7e6 d2d4 d7d5 b1c3 f8b4 e4e5 c7c5 a2a3 b4c3 b2c3 g8e7 d1g4 e8g8 f1d3 f7f5 e5f6 f8f6 c1g5" +
                 " f6f7 g4h5 g7g6 h5d1 b8c6 g1f3 d8f8 e1g1 c5c4 d3e2 h7h6 g5c1 c8d7 f3e1 g6g5 g2g3 e7f5 e1g2 f8g7 f2f4" +
@@ -104,17 +104,17 @@ public class PgnHolderTest {
         game.loadMoveText();
 
         assertEquals(42, pgn.getGames().size());
-        assertEquals("Shirov, Alexei", game.getWhitePlayer().getName());
-        assertEquals("Anand, Viswanathan", game.getBlackPlayer().getName());
-        assertEquals("2002.02.23", game.getDate());
-        assertEquals(1, game.getRound().getNumber());
-        assertEquals("1/2-1/2", game.getResult().getDescription());
-        assertEquals("104", game.getPlyCount());
-        assertEquals("Hathaway, Mark", game.getAnnotator());
-        assertEquals(2715, game.getWhitePlayer().getElo());
-        assertEquals(2757, game.getBlackPlayer().getElo());
+        assertEquals("Shirov, Alexei", game.whitePlayer.name);
+        assertEquals("Anand, Viswanathan", game.blackPlayer.name);
+        assertEquals("2002.02.23", game.date);
+        assertEquals(1, game.round.number);
+        assertEquals("1/2-1/2", game.result.description);
+        assertEquals("104", game.plyCount);
+        assertEquals("Hathaway, Mark", game.annotator);
+        assertEquals(2715, game.whitePlayer.elo);
+        assertEquals(2757, game.blackPlayer.elo);
 
-        assertEquals("B49", game.getEco());
+        assertEquals("B49", game.eco);
         assertEquals(104, game.getHalfMoves().size());
         assertEquals("e2e4 c7c5 g1f3 e7e6 d2d4 c5d4 f3d4 b8c6 b1c3 d8c7 f1e2 a7a6 e1g1 g8f6 c1e3 f8b4 c3a4 b4e7 d4c6" +
                 " b7c6 a4b6 a8b8 b6c8 c7c8 e3d4 e8g8 d1d3 c8c7 b2b3 a6a5 a1d1 d7d5 e4d5 f6d5 e2f3 f8d8 c2c4 d5f6 d3c3" +
@@ -139,17 +139,17 @@ public class PgnHolderTest {
         game.loadMoveText();
 
         assertEquals(270, pgn.getGames().size());
-        assertEquals("Amoeba 1.2 64-bit", game.getWhitePlayer().getName());
-        assertEquals("RedQueen 1.1.98 64-bit", game.getBlackPlayer().getName());
-        assertEquals("2016.06.08", game.getDate());
-        assertEquals(1, game.getRound().getNumber());
-        assertEquals("1-0", game.getResult().getDescription());
-        assertEquals("97", game.getPlyCount());
-        assertEquals(null, game.getAnnotator());
-        assertEquals(0, game.getWhitePlayer().getElo());
-        assertEquals(0, game.getBlackPlayer().getElo());
+        assertEquals("Amoeba 1.2 64-bit", game.whitePlayer.name);
+        assertEquals("RedQueen 1.1.98 64-bit", game.blackPlayer.name);
+        assertEquals("2016.06.08", game.date);
+        assertEquals(1, game.round.number);
+        assertEquals("1-0", game.result.description);
+        assertEquals("97", game.plyCount);
+        assertEquals(null, game.annotator);
+        assertEquals(0, game.whitePlayer.elo);
+        assertEquals(0, game.blackPlayer.elo);
 
-        assertEquals("B90", game.getEco());
+        assertEquals("B90", game.eco);
         assertEquals(97, game.getHalfMoves().size());
         assertEquals("e2e4 c7c5 g1f3 d7d6 d2d4 c5d4 f3d4 g8f6 b1c3 a7a6 f2f3 d8b6 d4b3 e7e6 g2g4 b8c6 d1e2 b6c7 c1e3 " +
                         "b7b5 e1c1 f6d7 c1b1 d7b6 e2f2 a8b8 h2h4 f8e7 f1b5 a6b5 c3b5 c7b7 e3b6 e8g8 b6c7 b7b5 h4h5 c8a6 h5h6 " +
@@ -392,17 +392,17 @@ public class PgnHolderTest {
         game.loadMoveText();
 
         assertEquals(3, pgn.getGames().size());
-        assertEquals("Rookie", game.getWhitePlayer().getName());
-        assertEquals("JabbaChess", game.getBlackPlayer().getName());
-        assertEquals("2011.01.29", game.getDate());
-        assertEquals(2, game.getRound().getNumber());
-        assertEquals("1-0", game.getResult().getDescription());
-        assertEquals("67", game.getPlyCount());
-        assertEquals("Albert Silver", game.getAnnotator());
-        assertEquals(2285, game.getWhitePlayer().getElo());
-        assertEquals(1680, game.getBlackPlayer().getElo());
+        assertEquals("Rookie", game.whitePlayer.name);
+        assertEquals("JabbaChess", game.blackPlayer.name);
+        assertEquals("2011.01.29", game.date);
+        assertEquals(2, game.round.number);
+        assertEquals("1-0", game.result.description);
+        assertEquals("67", game.plyCount);
+        assertEquals("Albert Silver", game.annotator);
+        assertEquals(2285, game.whitePlayer.elo);
+        assertEquals(1680, game.blackPlayer.elo);
 
-        assertEquals("C00", game.getEco());
+        assertEquals("C00", game.eco);
         assertEquals(67, game.getHalfMoves().size());
         assertEquals("e2e4 e7e6 d2d4 a7a6 g1f3 d7d5 e4d5 e6d5 f1d3 b8c6 e1g1 g8f6 f1e1 f8e7 c2c3 e8g8 b1d2 f8e8 f3e5 " +
                 "c6e5 d4e5 f6d7 d2b3 g7g6 b3d4 c7c5 d4f3 b7b5 c1h6 c8b7 h2h4 e7h4 a2a4 b5b4 c3b4 c5b4 d1c1 h4e7 c1f4 " +
@@ -460,17 +460,17 @@ public class PgnHolderTest {
         game.loadMoveText();
 
         assertEquals(1, pgn.getGames().size());
-        assertEquals("Rookie", game.getWhitePlayer().getName());
-        assertEquals("JabbaChess", game.getBlackPlayer().getName());
-        assertEquals("2011.01.29", game.getDate());
-        assertEquals(2, game.getRound().getNumber());
-        assertEquals("1-0", game.getResult().getDescription());
-        assertEquals("67", game.getPlyCount());
-        assertEquals("Albert Silver", game.getAnnotator());
-        assertEquals(2285, game.getWhitePlayer().getElo());
-        assertEquals(1680, game.getBlackPlayer().getElo());
+        assertEquals("Rookie", game.whitePlayer.name);
+        assertEquals("JabbaChess", game.blackPlayer.name);
+        assertEquals("2011.01.29", game.date);
+        assertEquals(2, game.round.number);
+        assertEquals("1-0", game.result.description);
+        assertEquals("67", game.plyCount);
+        assertEquals("Albert Silver", game.annotator);
+        assertEquals(2285, game.whitePlayer.elo);
+        assertEquals(1680, game.blackPlayer.elo);
 
-        assertEquals("C00", game.getEco());
+        assertEquals("C00", game.eco);
         assertEquals(67, game.getHalfMoves().size());
         assertEquals("e2e4 e7e6 d2d4 a7a6 g1f3 d7d5 e4d5 e6d5 f1d3 b8c6 e1g1 g8f6 f1e1 f8e7 c2c3 e8g8 b1d2 f8e8 f3e5 " +
                 "c6e5 d4e5 f6d7 d2b3 g7g6 b3d4 c7c5 d4f3 b7b5 c1h6 c8b7 h2h4 e7h4 a2a4 b5b4 c3b4 c5b4 d1c1 h4e7 c1f4 " +
@@ -496,19 +496,19 @@ public class PgnHolderTest {
             int i = 0;
             for (final Move move : game.getHalfMoves()) {
                 board.doMove(move);
-                assertEquals(board.getIncrementalHashKey(), board.getZobristKey());
+                assertEquals(board.incrementalHashKey, board.getZobristKey());
                 s.append(i++);
                 s.append(" -> ");
                 s.append(board.getFen());
                 s.append(" -> ");
                 s.append(move);
                 s.append(" -> ");
-                s.append(board.getIncrementalHashKey());
+                s.append(board.incrementalHashKey);
                 s.append("\n");
-                map.compute(board.getIncrementalHashKey(), (a, b) -> (b == null) ? 1 : b + 1);
+                map.compute(board.incrementalHashKey, (a, b) -> (b == null) ? 1 : b + 1);
                 String key = board.getPositionId();
                 map2.compute(key, (a, b) -> (b == null) ? 1 : b + 1);
-                map3.put(key, board.getIncrementalHashKey());
+                map3.put(key, board.incrementalHashKey);
             }
 
             for (Map.Entry<String, Long> entry : map3.entrySet()) {
@@ -533,7 +533,7 @@ public class PgnHolderTest {
         game.loadMoveText();
 
         final Board board = new Board();
-        board.loadFromFen(game.getFen());
+        board.loadFromFen(game.fen);
         for (final Move move : game.getHalfMoves()) {
             board.doMove(move);
         }
