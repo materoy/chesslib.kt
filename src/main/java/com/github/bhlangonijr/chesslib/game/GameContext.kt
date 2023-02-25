@@ -637,7 +637,7 @@ class GameContext @JvmOverloads constructor(gameMode: GameMode? = GameMode.HUMAN
         private fun squareListToBb(list: List<Square>): Long {
             var r = 0L
             for (s in list) {
-                r = r or Square.bitboard
+                r = r or s.bitboard
             }
             return r
         }

@@ -36,7 +36,7 @@ class Round
      * @return the games of the round
      */
     @JvmField
-    val game: List<Game> = ArrayList()
+    val game: MutableList<Game> = mutableListOf()
 
     /**
      * Returns the number of the round.

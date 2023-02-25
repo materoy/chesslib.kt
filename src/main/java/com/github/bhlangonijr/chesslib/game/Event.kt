@@ -27,7 +27,7 @@ class Event {
      * @return the rounds
      */
     @JvmField
-    val round: Map<Int, Round> = HashMap()
+    val round: MutableMap<Int, Round> = HashMap()
     /**
      * Returns the ID of the event.
      *

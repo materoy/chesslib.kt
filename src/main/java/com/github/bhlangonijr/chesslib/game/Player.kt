@@ -29,7 +29,6 @@ interface Player {
      *
      * @param id the ID to set
      */
-    @JvmField
     var id: String?
     /**
      * Returns the ELO rating of the player.
@@ -41,7 +40,6 @@ interface Player {
      *
      * @param elo the ELO rating to set
      */
-    @JvmField
     var elo: Int
     /**
      * Returns the name of the player.
@@ -53,7 +51,6 @@ interface Player {
      *
      * @param name the name to set
      */
-    @JvmField
     var name: String?
     /**
      * Returns the type of the player.
@@ -65,7 +62,6 @@ interface Player {
      *
      * @param type the type to set
      */
-    @JvmField
     var type: PlayerType?
     /**
      * Returns the description of the player.
@@ -77,7 +73,6 @@ interface Player {
      *
      * @param description the description to set
      */
-    @JvmField
     var description: String?
 
     /**

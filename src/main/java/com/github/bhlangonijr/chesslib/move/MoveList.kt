@@ -55,10 +55,10 @@ class MoveList
          *
          * @return the FEN representation of the initial position
          */
-        val startFen: String = Constants.startStandardFENPosition) : LinkedList<Move?>(), MutableList<Move?> {
+        val startFen: String = Constants.startStandardFENPosition) : LinkedList<Move>(), MutableList<Move> {
     private var dirty = true
-    private var sanArray: Array<String?>?
-    private var fanArray: Array<String?>?
+    private var sanArray: Array<String> = arrayOf()
+    private var fanArray: Array<String> = arrayOf()
     /**
      * Returns the parent index of the list of moves.
      *
@@ -97,22 +97,22 @@ class MoveList
         super.addAll(halfMoves)
     }
 
-    override fun add(index: Int, move: Move?) {
+    override fun add(index: Int, move: Move) {
         dirty = true
         super.add(index, move)
     }
 
-    override fun add(move: Move?): Boolean {
+    override fun add(move: Move): Boolean {
         dirty = true
         return super.add(move)
     }
 
-    override fun addAll(moves: Collection<Move?>): Boolean {
+    override fun addAll(moves: Collection<Move>): Boolean {
         dirty = true
         return super.addAll(moves)
     }
 
-    override fun addAll(index: Int, moves: Collection<Move?>): Boolean {
+    override fun addAll(index: Int, moves: Collection<Move>): Boolean {
         dirty = true
         return super.addAll(index, moves)
     }
@@ -127,20 +127,20 @@ class MoveList
         return super.removeLast()
     }
 
-    override fun remove(o: Any?): Boolean {
+    override fun remove(move: Move): Boolean {
         dirty = true
-        return super.remove(o)
+        return super.remove(move)
     }
 
-    override fun remove(index: Int): Move {
+    override fun removeAt(index: Int): Move {
         dirty = true
-        return super.removeAt(index)!!
+        return super.removeAt(index)
     }
 
     override fun clear() {
         dirty = true
-        sanArray = null
-        fanArray = null
+        sanArray = arrayOf()
+        fanArray = arrayOf()
         super.clear()
     }
 
@@ -197,9 +197,9 @@ class MoveList
     }
 
     @Throws(MoveConversionException::class)
-    private fun toStringWithoutMoveNumbers(moveArray: Array<String?>?): String {
+    private fun toStringWithoutMoveNumbers(moveArray: Array<String>): String {
         val sb = StringBuilder()
-        for (move in moveArray!!) {
+        for (move in moveArray) {
             sb.append(move)
             sb.append(StringUtils.SPACE)
         }
@@ -207,9 +207,9 @@ class MoveList
     }
 
     @Throws(MoveConversionException::class)
-    private fun toStringWithMoveNumbers(moveArray: Array<String?>?): String {
+    private fun toStringWithMoveNumbers(moveArray: Array<String>): String {
         val sb = StringBuilder()
-        for (halfMove in moveArray!!.indices) {
+        for (halfMove in moveArray.indices) {
             if (halfMove % 2 == 0) {
                 sb.append(halfMove / 2 + 1).append(". ")
             }
@@ -225,7 +225,7 @@ class MoveList
      * @throws MoveConversionException in case a conversion error occurs during the process
      */
     @Throws(MoveConversionException::class)
-    fun toSanArray(): Array<String?>? {
+    fun toSanArray(): Array<String> {
         if (!dirty && sanArray != null) {
             return sanArray
         }
@@ -241,8 +241,8 @@ class MoveList
      * @throws MoveConversionException in case a conversion error occurs during the process
      */
     @Throws(MoveConversionException::class)
-    fun toFanArray(): Array<String?>? {
-        if (!dirty && fanArray != null) {
+    fun toFanArray(): Array<String> {
+        if (!dirty) {
             return fanArray
         }
         updateSanArray()
@@ -252,28 +252,28 @@ class MoveList
 
     @Throws(MoveConversionException::class)
     private fun updateSanArray() {
-        sanArray = arrayOfNulls(this.size)
+        sanArray = arrayOf()
         val b = board
         if (b.fen != startFen) {
             b.loadFromFen(startFen)
         }
         var i = 0
         for (move in this) {
-            sanArray!![i++] = encodeToSan(b, move)
+            sanArray[i++] = encodeToSan(b, move)
         }
         dirty = false
     }
 
     @Throws(MoveConversionException::class)
     private fun updateFanArray() {
-        fanArray = arrayOfNulls(this.size)
+        fanArray = arrayOf()
         val b = board
         if (b.fen != startFen) {
             b.loadFromFen(startFen)
         }
         var i = 0
         for (move in this) {
-            fanArray!![i++] = encodeToFan(b, move)
+            fanArray[i++] = encodeToFan(b, move)
         }
         dirty = false
     }
@@ -371,8 +371,10 @@ class MoveList
         }
         try {
             text = StringUtil.normalize(text)
-            val m = text.split(StringUtils.SPACE.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            for (strMove in m) {
+            val m = text.split(StringUtils.SPACE.toRegex()).dropLastWhile { it.isEmpty() }.toMutableList()
+            val strMoveIterator = m.listIterator()
+            while (strMoveIterator.hasNext()) {
+                val strMove = strMoveIterator.next()
                 if (strMove.startsWith("$")) {
                     continue
                 }
@@ -380,7 +382,7 @@ class MoveList
                     continue
                 }
                 if (strMove.contains(".")) {
-                    strMove = StringUtil.afterSequence(strMove, ".")
+                    strMoveIterator.set(StringUtil.afterSequence(strMove, "."))
                 }
                 if (StringUtils.isBlank(strMove)) {
                     continue
@@ -665,7 +667,7 @@ class MoveList
         // encode the move to FAN move and update thread local board
         @Throws(MoveConversionException::class)
         private fun encodeToFan(board: Board, move: Move): String {
-            return encode(board, move, Piece::getFanSymbol)
+            return encode(board, move, Piece::fanSymbol)
         }
 
         /**
@@ -702,12 +704,12 @@ class MoveList
                 //resolving ambiguous move
                 var amb = board.squareAttackedByPieceType(move.to,
                         board.sideToMove, piece.pieceType)
-                amb = amb and Square.bitboard.inv()
+                amb = amb and move.from.bitboard.inv()
                 if (amb != 0L) {
                     val fromList = bbToSquareList(amb)
                     for (from in fromList) {
                         if (!board.isMoveLegal(Move(from, move.to), false)) {
-                            amb = amb xor Square.bitboard
+                            amb = amb xor move.from.bitboard
                         }
                     }
                 }
@@ -759,7 +761,7 @@ class MoveList
                 for (sqSource in bbToSquareList(pieces)) {
                     val move = Move(sqSource, to, promotion)
                     if (board.isMoveLegal(move, true)) {
-                        result = result or Square.bitboard
+                        result = result or sqSource.bitboard
                         break
                     }
                 }

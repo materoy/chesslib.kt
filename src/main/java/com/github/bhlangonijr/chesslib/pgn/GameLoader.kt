@@ -91,7 +91,7 @@ object GameLoader {
                 r = Math.max(0, r)
                 container.round.number = r
                 if (!container.event.round.containsKey(r)) {
-                    container.event.round.put(r, container.round)
+                    container.event.round[r] = container.round
                 }
             }
 
@@ -148,9 +148,9 @@ object GameLoader {
 
             else -> {
                 if (container.game.property == null) {
-                    container.game.setProperty(HashMap<K, V>())
+                    container.game.property = HashMap()
                 }
-                container.game.property.put(property.name, property.value)
+                container.game.property?.put(property.name, property.value)
             }
         }
     }

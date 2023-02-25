@@ -25,8 +25,8 @@ import com.github.bhlangonijr.chesslib.util.LargeFile
  *
  * The iterator permits iterating over large PGN files without piling up every game into the memory.
  */
-class PgnIterator : Iterable<Game?>, AutoCloseable {
-    private val pgnLines: Iterator<String?>
+class PgnIterator : Iterable<Game>, AutoCloseable {
+    private val pgnLines: Iterator<String>
     private var game: Game? = null
 
     /**
@@ -35,7 +35,7 @@ class PgnIterator : Iterable<Game?>, AutoCloseable {
      * @param filename the PGN filename
      * @throws Exception in case the PGN file can not be accessed
      */
-    constructor(filename: String?) : this(LargeFile(filename))
+    constructor(filename: String) : this(LargeFile(filename))
 
     /**
      * Constructs a new PGN iterator from the PGN file.
@@ -52,7 +52,7 @@ class PgnIterator : Iterable<Game?>, AutoCloseable {
      *
      * @param pgnLines an iterable over the PGN lines
      */
-    constructor(pgnLines: Iterable<String?>) {
+    constructor(pgnLines: Iterable<String>) {
         this.pgnLines = pgnLines.iterator()
         loadNextGame()
     }
@@ -62,7 +62,7 @@ class PgnIterator : Iterable<Game?>, AutoCloseable {
      *
      * @param pgnLines an iterator over PGN lines
      */
-    constructor(pgnLines: Iterator<String?>) {
+    constructor(pgnLines: Iterator<String>) {
         this.pgnLines = pgnLines
         loadNextGame()
     }
@@ -81,24 +81,25 @@ class PgnIterator : Iterable<Game?>, AutoCloseable {
      */
     @Throws(Exception::class)
     override fun close() {
-        if (pgnLines is LargeFile) {
-            (pgnLines as LargeFile).close()
-        }
+        TODO("Fix error incompatible types")
+//        if (pgnLines is LargeFile) {
+//            (pgnLines as LargeFile).close()
+//        }
     }
 
     private fun loadNextGame() {
         game = loadNextGame(pgnLines)
     }
 
-    private inner class GameIterator : MutableIterator<Game?> {
+    private inner class GameIterator : MutableIterator<Game> {
         override fun hasNext(): Boolean {
             return game != null
         }
 
-        override fun next(): Game? {
+        override fun next(): Game {
             val current = game
             loadNextGame()
-            return current
+            return current!!
         }
 
         override fun remove() {}

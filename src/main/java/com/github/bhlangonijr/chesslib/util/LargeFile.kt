@@ -23,7 +23,7 @@ import java.io.InputStreamReader
 /**
  * An abstract representation of a potentially large text-based file that can be read line by line.
  */
-class LargeFile : Iterable<String?>, AutoCloseable {
+class LargeFile : Iterable<String>, AutoCloseable {
     private val reader: BufferedReader
     private var nextLine: String? = null
 
@@ -33,7 +33,7 @@ class LargeFile : Iterable<String?>, AutoCloseable {
      * @param filePath the file path
      * @throws Exception in case the file can not be accessed
      */
-    constructor(filePath: String?) {
+    constructor(filePath: String) {
         reader = BufferedReader(FileReader(filePath))
         readNextLine()
     }
@@ -43,7 +43,7 @@ class LargeFile : Iterable<String?>, AutoCloseable {
      *
      * @param inputStream the input stream
      */
-    constructor(inputStream: InputStream?) {
+    constructor(inputStream: InputStream) {
         reader = BufferedReader(InputStreamReader(inputStream))
         readNextLine()
     }
@@ -76,15 +76,15 @@ class LargeFile : Iterable<String?>, AutoCloseable {
         }
     }
 
-    private inner class FileIterator : MutableIterator<String?> {
+    private inner class FileIterator : MutableIterator<String> {
         override fun hasNext(): Boolean {
             return nextLine != null
         }
 
-        override fun next(): String? {
+        override fun next(): String {
             val currentLine = nextLine
             readNextLine()
-            return currentLine
+            return currentLine!!
         }
 
         override fun remove() {}

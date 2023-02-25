@@ -27,7 +27,7 @@ import java.util.*
 /**
  * A chess game, as defined by the specifications of the Portable Game Notation (PGN) format.
  */
-class Game(
+data class Game(
         /**
          * Sets the game ID.
          *
@@ -142,23 +142,8 @@ class Game(
      * @param result the result to set
      */
     @JvmField
-    var result: GameResult
-    var halfMoves: MoveList? = MoveList()
-        /**
-         * Returns a reference to the [MoveList] that holds the moves of the game, its main variation.
-         *
-         * @return the move list of the game
-         */
-        get() {
-            if (field == null) {
-                field = if (StringUtils.isNotBlank(fen)) {
-                    MoveList(fen)
-                } else {
-                    MoveList()
-                }
-            }
-            return field
-        }
+    var result: GameResult = GameResult.ONGOING
+    var halfMoves: MoveList = MoveList()
         /**
          * Sets the moves of the game.
          *
@@ -218,7 +203,7 @@ class Game(
      * @param property the properties to set
      */
     @JvmField
-    var property: Map<String, String?>? = null
+    var property: MutableMap<String, String>? = null
     /**
      * Returns the initial position of the game as a Forsyth-Edwards Notation (FEN) string.
      *
@@ -332,7 +317,6 @@ class Game(
      * @param round  the round the game belongs to
      */
     init {
-        result = GameResult.ONGOING
         position = 0
     }
 
@@ -392,7 +376,7 @@ class Game(
         var moveCounter = initialPosition + 1
         var variantIndex = 0
         var lastSize = sb.length
-        if (halfMoves!!.size == 0) {
+        if (halfMoves.size == 0) {
             sb.append(moveText.toString())
         } else {
             sb.append(moveCounter)
@@ -401,7 +385,7 @@ class Game(
             } else {
                 sb.append(". ")
             }
-            val sanArray = halfMoves!!.toSanArray()
+            val sanArray = halfMoves.toSanArray()
             for (i in sanArray.indices) {
                 val san = sanArray[i]
                 index++
@@ -511,9 +495,9 @@ class Game(
      */
     override fun toString(): String {
         return try {
-            toPgn(true, true) //TODO this throws NPE in debugger sometimes
+            toPgn(includeVariations = true, includeComments = true) //TODO this throws NPE in debugger sometimes
         } catch (e: MoveConversionException) {
-            null
+            ""
         }
     }
 
@@ -531,9 +515,7 @@ class Game(
      */
     @Throws(Exception::class)
     fun loadMoveText() {
-        if (moveText != null) {
-            loadMoveText(moveText)
-        }
+        moveText?.let { loadMoveText(it) }
     }
 
     /**
@@ -544,7 +526,7 @@ class Game(
      * @throws Exception if it is not possible to load the moves
      */
     @Throws(Exception::class)
-    fun loadMoveText(moveText: StringBuilder?) {
+    fun loadMoveText(moveText: StringBuilder) {
         if (variations != null) {
             variations!!.clear()
         }
@@ -561,7 +543,9 @@ class Game(
         StringUtil.replaceAll(moveText, ")", " ) ")
         val text = moveText.toString()
         if (StringUtils.isNotBlank(fen)) {
-            halfMoves = MoveList(fen)
+            fen?.let {
+                halfMoves = MoveList(it)
+            }
         } else {
             halfMoves = MoveList()
         }
@@ -573,21 +557,23 @@ class Game(
         var onCommentBlock = false
         var onVariationBlock = false
         var onLineCommentBlock = false
-        for (token in text.split(StringUtils.SPACE.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
+        val tokensIterator = text.split(StringUtils.SPACE.toRegex()).dropLastWhile { it.isEmpty() }.toMutableList().listIterator()
+        while (tokensIterator.hasNext()) {
+            val token = tokensIterator.next()
             if (StringUtils.isBlank(token)) {
                 continue
             }
             if (!(onLineCommentBlock || onCommentBlock) &&
                     token.contains("...")) {
-                token = StringUtil.afterSequence(token, "...")
-                if (token.trim { it <= ' ' }.length == 0) {
+                tokensIterator.set(StringUtil.afterSequence(token, "..."))
+                if (token.trim { it <= ' ' }.isEmpty()) {
                     continue
                 }
             }
             if (!(onLineCommentBlock || onCommentBlock) &&
                     token.contains(".")) {
-                token = StringUtil.afterSequence(token, ".")
-                if (token.trim { it <= ' ' }.length == 0) {
+                tokensIterator.set(StringUtil.afterSequence(token, "."))
+                if (token.trim { it <= ' ' }.isEmpty()) {
                     continue
                 }
             }
