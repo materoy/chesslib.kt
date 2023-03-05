@@ -208,7 +208,7 @@ object Constants {
      * @throws IllegalArgumentException if the input symbol does not correspond to any standard chess piece
      */
     @Deprecated("use {@link Piece#fromFenSymbol(String)} instead")
-    fun getPieceByNotation(notation: String?): Piece {
+    fun getPieceByNotation(notation: String): Piece {
         return Piece.fromFenSymbol(notation)
     }
 }

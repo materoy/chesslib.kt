@@ -81,7 +81,7 @@ class Board @JvmOverloads constructor(gameContext: GameContext = GameContext(), 
      * @return the map containing the castle rights for both sides
      */
     @JvmField
-    val castleRight: EnumMap<Side?, CastleRight>
+    val castleRight: EnumMap<Side, CastleRight>
 
     /**
      * Returns the history of the board, represented by the hashes of all the positions occurred on the board.
@@ -102,7 +102,7 @@ class Board @JvmOverloads constructor(gameContext: GameContext = GameContext(), 
      * @param sideToMove the side to move to set
      */
     @JvmField
-    var sideToMove: Side? = null
+    var sideToMove: Side = Side.WHITE
     /**
      * Returns the target square of an en passant capture, if any. In other words, the square which contains the pawn
      * that can be captured en passant.
@@ -228,7 +228,7 @@ class Board @JvmOverloads constructor(gameContext: GameContext = GameContext(), 
         for (evt in BoardEventType.values()) {
             eventListener[evt] = CopyOnWriteArrayList()
         }
-        loadFromFen(gameContext.startFEN)
+        gameContext.startFEN?.let { loadFromFen(it) }
         isEnableEvents = true
     }
 
@@ -246,7 +246,7 @@ class Board @JvmOverloads constructor(gameContext: GameContext = GameContext(), 
      * @param move the move to execute in SAN notation, such as `Nc3`
      * @return `true` if the move was successful and the resulting position is valid
      */
-    fun doMove(move: String?): Boolean {
+    fun doMove(move: String): Boolean {
         val moves = MoveList(fen)
         moves.addSanMove(move, true, true)
         return doMove(moves.removeLast(), true)
@@ -296,7 +296,11 @@ class Board @JvmOverloads constructor(gameContext: GameContext = GameContext(), 
                 if (context.hasCastleRight(move, getCastleRight(side))) {
                     val c = if (context.isKingSideCastle(move)) CastleRight.KING_SIDE else CastleRight.QUEEN_SIDE
                     val rookMove = context.getRookCastleMove(side, c)
-                    movePiece(rookMove, backupMove)
+                    if (rookMove != null) {
+                        movePiece(rookMove, backupMove)
+                    } else {
+                        return false
+                    }
                 } else {
                     return false
                 }
@@ -309,7 +313,7 @@ class Board @JvmOverloads constructor(gameContext: GameContext = GameContext(), 
                 && CastleRight.NONE != getCastleRight(side)) {
             val oo = context.getRookoo(side)
             val ooo = context.getRookooo(side)
-            if (move.from == oo.from) {
+            if (move.from == oo?.from) {
                 if (CastleRight.KING_AND_QUEEN_SIDE == getCastleRight(side)) {
                     incrementalHashKey = incrementalHashKey xor getCastleRightKey(side)
                     castleRight[side] = CastleRight.QUEEN_SIDE
@@ -318,7 +322,7 @@ class Board @JvmOverloads constructor(gameContext: GameContext = GameContext(), 
                     incrementalHashKey = incrementalHashKey xor getCastleRightKey(side)
                     castleRight[side] = CastleRight.NONE
                 }
-            } else if (move.from == ooo.from) {
+            } else if (move.from == ooo?.from) {
                 if (CastleRight.KING_AND_QUEEN_SIDE == getCastleRight(side)) {
                     incrementalHashKey = incrementalHashKey xor getCastleRightKey(side)
                     castleRight[side] = CastleRight.KING_SIDE
@@ -331,9 +335,9 @@ class Board @JvmOverloads constructor(gameContext: GameContext = GameContext(), 
         }
         val capturedPiece = movePiece(move, backupMove)
         if (PieceType.ROOK == capturedPiece.pieceType) {
-            val oo = context.getRookoo(side!!.flip())
+            val oo = context.getRookoo(side.flip())
             val ooo = context.getRookooo(side.flip())
-            if (move.to == oo.from) {
+            if (move.to == oo?.from) {
                 if (CastleRight.KING_AND_QUEEN_SIDE == getCastleRight(side.flip())) {
                     incrementalHashKey = incrementalHashKey xor getCastleRightKey(side.flip())
                     castleRight[side.flip()] = CastleRight.QUEEN_SIDE
@@ -342,7 +346,7 @@ class Board @JvmOverloads constructor(gameContext: GameContext = GameContext(), 
                     incrementalHashKey = incrementalHashKey xor getCastleRightKey(side.flip())
                     castleRight[side.flip()] = CastleRight.NONE
                 }
-            } else if (move.to == ooo.from) {
+            } else if (move.to == ooo?.from) {
                 if (CastleRight.KING_AND_QUEEN_SIDE == getCastleRight(side.flip())) {
                     incrementalHashKey = incrementalHashKey xor getCastleRightKey(side.flip())
                     castleRight[side.flip()] = CastleRight.KING_SIDE
@@ -363,7 +367,7 @@ class Board @JvmOverloads constructor(gameContext: GameContext = GameContext(), 
         if (PieceType.PAWN == movingPiece.pieceType) {
             if (Math.abs(move.to.rank.ordinal -
                             move.from.rank.ordinal) == 2) {
-                val otherPawn = Piece.make(side!!.flip(), PieceType.PAWN)
+                val otherPawn = Piece.make(side.flip(), PieceType.PAWN)
                 enPassant = findEnPassant(move.to, side)
                 if (hasPiece(otherPawn, move.to.sideSquares) &&
                         verifyNotPinnedPiece(side, enPassant, move.to)) {
@@ -376,7 +380,7 @@ class Board @JvmOverloads constructor(gameContext: GameContext = GameContext(), 
         if (side == Side.BLACK) {
             moveCounter = moveCounter!! + 1
         }
-        sideToMove = side!!.flip()
+        sideToMove = side.flip()
         incrementalHashKey = incrementalHashKey xor getSideKey(sideToMove)
         if (updateHistory) {
             history.addLast(incrementalHashKey)
@@ -602,8 +606,8 @@ class Board @JvmOverloads constructor(gameContext: GameContext = GameContext(), 
      * @param side the side for which the castle right must be returned
      * @return the castle right of the side
      */
-    fun getCastleRight(side: Side?): CastleRight? {
-        return castleRight[side]
+    fun getCastleRight(side: Side): CastleRight {
+        return castleRight[side]!!
     }
 
     /**
@@ -634,6 +638,7 @@ class Board @JvmOverloads constructor(gameContext: GameContext = GameContext(), 
      */
     fun setPiece(piece: Piece, sq: Square) {
         bitboard[piece.ordinal] = bitboard[piece.ordinal] or sq.bitboard
+        piece.pieceSide ?: throw IllegalArgumentException("Piece side cannot be null")
         bbSide[piece.pieceSide.ordinal] = bbSide[piece.pieceSide.ordinal] or sq.bitboard
         occupation[sq.ordinal] = piece
         if (piece != Piece.NONE && sq != Square.NONE) {
@@ -649,6 +654,7 @@ class Board @JvmOverloads constructor(gameContext: GameContext = GameContext(), 
      */
     fun unsetPiece(piece: Piece, sq: Square?) {
         bitboard[piece.ordinal] = bitboard[piece.ordinal] xor sq!!.bitboard
+        piece.pieceSide ?: throw IllegalArgumentException("Piece side cannot be null")
         bbSide[piece.pieceSide.ordinal] = bbSide[piece.pieceSide.ordinal] xor sq.bitboard
         occupation[sq.ordinal] = Piece.NONE
         if (piece != Piece.NONE && sq != Square.NONE) {
@@ -875,9 +881,7 @@ class Board @JvmOverloads constructor(gameContext: GameContext = GameContext(), 
      *
      * @return the board event type [BoardEventType.ON_LOAD]
      */
-    override fun getType(): BoardEventType {
-        return BoardEventType.ON_LOAD
-    }
+    override val type: BoardEventType = BoardEventType.ON_LOAD
 
     /**
      * Returns an [EnumMap] of the event listeners registered to this board. Each entry of the map contains the
@@ -968,26 +972,26 @@ class Board @JvmOverloads constructor(gameContext: GameContext = GameContext(), 
      * @param type   the type of the attacking pieces
      * @return the bitboard of all the pieces of the given side and type that can attack the square
      */
-    fun squareAttackedByPieceType(square: Square?, side: Side?, type: PieceType?): Long {
+    fun squareAttackedByPieceType(square: Square, side: Side, type: PieceType): Long {
         var result = 0L
         val occ = getBitboard()
         when (type) {
-            PieceType.PAWN -> result = getPawnAttacks(side!!.flip(), square!!) and
+            PieceType.PAWN -> result = getPawnAttacks(side.flip(), square) and
                     getBitboard(Piece.make(side, PieceType.PAWN))
 
-            PieceType.KNIGHT -> result = getKnightAttacks(square!!, occ) and
+            PieceType.KNIGHT -> result = getKnightAttacks(square, occ) and
                     getBitboard(Piece.make(side, PieceType.KNIGHT))
 
-            PieceType.BISHOP -> result = getBishopAttacks(occ, square!!) and
+            PieceType.BISHOP -> result = getBishopAttacks(occ, square) and
                     getBitboard(Piece.make(side, PieceType.BISHOP))
 
-            PieceType.ROOK -> result = getRookAttacks(occ, square!!) and
+            PieceType.ROOK -> result = getRookAttacks(occ, square) and
                     getBitboard(Piece.make(side, PieceType.ROOK))
 
-            PieceType.QUEEN -> result = getQueenAttacks(occ, square!!) and
+            PieceType.QUEEN -> result = getQueenAttacks(occ, square) and
                     getBitboard(Piece.make(side, PieceType.QUEEN))
 
-            PieceType.KING -> result = result or (getKingAttacks(square!!, occ) and
+            PieceType.KING -> result = result or (getKingAttacks(square, occ) and
                     getBitboard(Piece.make(side, PieceType.KING)))
 
             else -> {}
@@ -1001,7 +1005,7 @@ class Board @JvmOverloads constructor(gameContext: GameContext = GameContext(), 
      * @param side the side of the king
      * @return the square occupied by the king
      */
-    fun getKingSquare(side: Side?): Square {
+    fun getKingSquare(side: Side): Square {
         val result = Square.NONE
         val piece = getBitboard(Piece.make(side, PieceType.KING))
         if (piece != 0L) {
@@ -1060,7 +1064,7 @@ class Board @JvmOverloads constructor(gameContext: GameContext = GameContext(), 
      */
     fun isMoveLegal(move: Move, fullValidation: Boolean): Boolean {
         val fromPiece = getPiece(move.from)
-        val side = sideToMove
+        val side = sideToMove!!
         val fromType = fromPiece.pieceType
         val capturedPiece = getPiece(move.to)
         if (fullValidation) {
@@ -1083,7 +1087,7 @@ class Board @JvmOverloads constructor(gameContext: GameContext = GameContext(), 
                 if (context.isKingSideCastle(move)) {
                     if (getCastleRight(side) == CastleRight.KING_AND_QUEEN_SIDE || getCastleRight(side) == CastleRight.KING_SIDE) {
                         if (getBitboard() and context.getooAllSquaresBb(side) == 0L) {
-                            return !isSquareAttackedBy(context.getooSquares(side), side!!.flip())
+                            return !isSquareAttackedBy(context.getooSquares(side), side.flip())
                         }
                     }
                     return false
@@ -1091,7 +1095,7 @@ class Board @JvmOverloads constructor(gameContext: GameContext = GameContext(), 
                 if (context.isQueenSideCastle(move)) {
                     if (getCastleRight(side) == CastleRight.KING_AND_QUEEN_SIDE || getCastleRight(side) == CastleRight.QUEEN_SIDE) {
                         if (getBitboard() and context.getoooAllSquaresBb(side) == 0L) {
-                            return !isSquareAttackedBy(context.getoooSquares(side), side!!.flip())
+                            return !isSquareAttackedBy(context.getoooSquares(side), side.flip())
                         }
                     }
                     return false
@@ -1099,12 +1103,12 @@ class Board @JvmOverloads constructor(gameContext: GameContext = GameContext(), 
             }
         }
         if (fromType == PieceType.KING) {
-            if (squareAttackedBy(move.to, side!!.flip()) != 0L) {
+            if (squareAttackedBy(move.to, side.flip()) != 0L) {
                 return false
             }
         }
         val kingSq = if (fromType == PieceType.KING) move.to else getKingSquare(side)
-        val other = side!!.flip()
+        val other = side.flip()
         val moveTo = move.to.bitboard
         val moveFrom = move.from.bitboard
         val ep = if (enPassantTarget != Square.NONE && move.to == enPassant && fromType == PieceType.PAWN) enPassantTarget!!.bitboard else 0
@@ -1454,12 +1458,12 @@ class Board @JvmOverloads constructor(gameContext: GameContext = GameContext(), 
             return hash
         }
 
-    private fun getCastleRightKey(side: Side?): Long {
-        return keys[3 * getCastleRight(side)!!.ordinal + 300 + 3 * side!!.ordinal]
+    private fun getCastleRightKey(side: Side): Long {
+        return keys[3 * getCastleRight(side).ordinal + 300 + 3 * side.ordinal]
     }
 
-    private fun getSideKey(side: Side?): Long {
-        return keys[3 * side!!.ordinal + 500]
+    private fun getSideKey(side: Side): Long {
+        return keys[3 * side.ordinal + 500]
     }
 
     private fun getEnPassantKey(enPassantTarget: Square?): Long {
@@ -1554,8 +1558,8 @@ class Board @JvmOverloads constructor(gameContext: GameContext = GameContext(), 
     }
 
     private fun pawnCanBeCapturedEnPassant(): Boolean {
-        return (squareAttackedByPieceType(enPassant, sideToMove, PieceType.PAWN) != 0L
-                && verifyNotPinnedPiece(sideToMove!!.flip(), enPassant, enPassantTarget))
+        return (enPassant?.let { squareAttackedByPieceType(it, sideToMove, PieceType.PAWN) } != 0L
+                && verifyNotPinnedPiece(sideToMove.flip(), enPassant, enPassantTarget))
     }
 
     private fun verifyNotPinnedPiece(side: Side?, enPassant: Square?, target: Square?): Boolean {

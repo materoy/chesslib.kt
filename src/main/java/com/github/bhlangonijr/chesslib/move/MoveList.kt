@@ -117,12 +117,12 @@ class MoveList
         return super.addAll(index, moves)
     }
 
-    override fun removeFirst(): Move? {
+    override fun removeFirst(): Move {
         dirty = true
         return super.removeFirst()
     }
 
-    override fun removeLast(): Move? {
+    override fun removeLast(): Move {
         dirty = true
         return super.removeLast()
     }

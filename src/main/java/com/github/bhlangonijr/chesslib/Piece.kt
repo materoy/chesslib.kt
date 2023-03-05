@@ -34,7 +34,7 @@ enum class Piece(
          *
          * @return the piece type of this piece
          */
-        val pieceType: PieceType?,
+        val pieceType: PieceType,
         /**
          * Returns the Figurine Algebraic Notation (FAN) symbol for this piece. For example, `♜` for a black rook, or
          * `♙` for a white pawn.
@@ -112,7 +112,7 @@ enum class Piece(
     /**
      * Special value that represents no piece in particular.
      */
-    NONE(null, null, "NONE", ".");
+    NONE(null, PieceType.NONE, "NONE", ".");
 
     /**
      * Returns the name of the piece.
@@ -130,7 +130,7 @@ enum class Piece(
          *
          * @return the SAN symbol of this piece
          */
-        get() = pieceType!!.sanSymbol
+        get() = pieceType.sanSymbol
 
     companion object {
         val allPieces = values()
